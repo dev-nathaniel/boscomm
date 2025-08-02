@@ -243,9 +243,12 @@ function App() {
       let stream: MediaStream | undefined;
       try {
         if (transport) {
+          console.log('getting user media')
           stream = await getUserMedia( isWebcam);
           // setStream(mediaStream);
+          console.log("gotten stream", stream);
           const track = stream?.getVideoTracks()[0];
+          console.log('Track:', track);
           const params: Mediasoup.types.ProducerOptions = { track };
           if (chkSimulcast.current?.checked) {
             params.encodings = [
