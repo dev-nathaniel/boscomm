@@ -22,7 +22,8 @@ function App() {
   const [device, setDevice] = useState<Mediasoup.types.Device>();
   const rtpCapabilities = useRef<Mediasoup.types.RtpCapabilities>({});
   // const [socket, setSocket] = useState();
-  const [producer, setProducer] = useState<Mediasoup.types.Producer>();
+  // const [producer, setProducer] = useState<Mediasoup.types.Producer>();
+  const producer = useRef<Mediasoup.types.Producer>(null);
   const [pubStatus, setPubStatus] = useState<HTMLSpanElement | null>(null);
   // const [isConnected, setIsConnected] = useState(socket.connected);
   // const [stream, setStream] = useState<MediaStream>();
@@ -50,7 +51,7 @@ function App() {
     try {
       setDevice(new Mediasoup.Device());
     } catch (error) {
-      if (error.name === 'UnsupportedError') {
+      if (typeof error === 'object' && error !== null && 'name' in error && (error as { name?: string }).name === 'UnsupportedError') {
         console.error('Browser not supported');
         
       }
@@ -256,8 +257,7 @@ function App() {
               videoGoogleStartBitrate: 1000, // Optional: Set initial bitrate for simulcast
             }
           }
-          const producer = await transport.produce(params);
-          setProducer(producer);
+          producer.current = await transport.produce(params);
         } 
       }catch (error) {
           console.error('Error accessing media devices:', error);
